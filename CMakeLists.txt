@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 2.8)
-project(ORB_SLAM3)
+project(orb_slam3)
 
 
-list(APPEND CMAKE_PREFIX_PATH "/home/gsk/vcpkg/installed/x64-linux")
+# list(APPEND CMAKE_PREFIX_PATH "/home/gsk/vcpkg/installed/x64-linux")
 
 IF(NOT CMAKE_BUILD_TYPE)
   SET(CMAKE_BUILD_TYPE Release)
