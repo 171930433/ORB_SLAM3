@@ -55,7 +55,7 @@ ${EIGEN3_INCLUDE_DIR}
 ${Pangolin_INCLUDE_DIRS}
 )
 
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 add_library(${PROJECT_NAME} SHARED
 src/System.cc
@@ -118,15 +118,24 @@ include/Config.h
 include/Settings.h)
 
 add_subdirectory(Thirdparty/g2o)
+add_subdirectory(Thirdparty/DBoW2)
+add_subdirectory(Thirdparty/Sophus)
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
 ${EIGEN3_LIBS}
 ${Pangolin_LIBRARIES}
-${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
-${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
+# ${PROJECT_SOURCE_DIR}/Thirdparty/DBoW2/lib/libDBoW2.so
+# ${PROJECT_SOURCE_DIR}/Thirdparty/g2o/lib/libg2o.so
+DBoW2
+g2o
 -lboost_serialization
 -lcrypto
+)
+
+target_compile_options(${PROJECT_NAME} PRIVATE -Wno-maybe-uninitialized -Wno-unused-variable -Wno-unused-but-set-variable
+-Wno-sign-compare -Wno-dangling-else -Wno-sign-compare -Wno-deprecated-declarations
+-Wno-reorder -Wno-conversion-null -Wno-deprecated -Wno-unused-local-typedefs -Wno-aggressive-loop-optimizations
 )
 
 # If RealSense SDK is found the library is added and its examples compiled
