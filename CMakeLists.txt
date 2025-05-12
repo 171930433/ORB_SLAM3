@@ -1,5 +1,5 @@
-cmake_minimum_required(VERSION 2.8)
-project(orb_slam3)
+cmake_minimum_required(VERSION 3.10)
+project(orb_slam3 VERSION 1.0.0)
 
 
 # list(APPEND CMAKE_PREFIX_PATH "/home/gsk/vcpkg/installed/x64-linux")
@@ -46,14 +46,6 @@ find_package(Pangolin CONFIG REQUIRED)
 find_package(realsense2)
 find_package(Boost REQUIRED COMPONENTS serialization)
 
-include_directories(
-${PROJECT_SOURCE_DIR}
-${PROJECT_SOURCE_DIR}/include
-${PROJECT_SOURCE_DIR}/include/CameraModels
-${PROJECT_SOURCE_DIR}/Thirdparty/Sophus
-${EIGEN3_INCLUDE_DIR}
-${Pangolin_INCLUDE_DIRS}
-)
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
@@ -93,8 +85,91 @@ if(realsense2_FOUND)
     )
 endif()
 
-install(TARGETS ${PROJECT_NAME} g2o DBoW2 DESTINATION lib)
-install(DIRECTORY include/ DESTINATION include)
+target_include_directories(
+    ${PROJECT_NAME}
+PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/CameraModels>
+  $<INSTALL_INTERFACE:include>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}/CameraModels>
+  $<INSTALL_INTERFACE:include/${PROJECT_NAME}/Thirdparty/Sophus>
+PRIVATE
+  ${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty/Sophus
+  ${EIGEN3_INCLUDE_DIR}
+  ${Pangolin_INCLUDE_DIRS}
+)
+
+
+
+include(CMakePackageConfigHelpers)
+include(GNUInstallDirs)
+
+install(
+  TARGETS
+        ${PROJECT_NAME} g2o DBoW2
+  EXPORT
+        ${PROJECT_NAME}-targets
+  ARCHIVE
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT lib
+  RUNTIME
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    COMPONENT bin
+  LIBRARY
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    COMPONENT lib
+  PUBLIC_HEADER
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+    COMPONENT dev
+)
+
+install(
+  EXPORT
+    ${PROJECT_NAME}-targets
+  NAMESPACE
+      ${PROJECT_NAME}::
+  DESTINATION
+      ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake
+  COMPONENT
+      dev
+)
+
+# 添加头文件安装规则
+install(
+  DIRECTORY include/ 
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+  COMPONENT dev
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+)
+
+install(
+  DIRECTORY  Thirdparty/DBoW2 Thirdparty/g2o Thirdparty/Sophus
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/Thirdparty
+  COMPONENT dev
+  FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"
+)
+
+write_basic_package_version_file (
+  ${PROJECT_NAME}-configVersion.cmake
+  VERSION ${PROJECT_VERSION}
+  COMPATIBILITY SameMajorVersion
+)
+
+configure_package_config_file(
+  orb_slam3Config.cmake.in
+  ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+  INSTALL_DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake
+  NO_CHECK_REQUIRED_COMPONENTS_MACRO
+)
+
+# Install cmake targets
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-config.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/${PROJECT_NAME}-configVersion.cmake
+  DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/cmake
+)
 
 # Build examples
 option(BUILD_EXAMPLES "Build examples." OFF)
