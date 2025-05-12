@@ -176,3 +176,9 @@ g2o/stuff/string_tools.cpp
 g2o/stuff/property.cpp       
 g2o/stuff/property.h       
 )
+
+target_compile_options(${PROJECT_NAME} PRIVATE -Wno-maybe-uninitialized -Wno-unused-variable -Wno-unused-but-set-variable
+-Wno-sign-compare -Wno-dangling-else -Wno-sign-compare -Wno-deprecated-declarations
+-Wno-reorder -Wno-conversion-null -Wno-deprecated -Wno-unused-local-typedefs -Wno-aggressive-loop-optimizations
+)
+
