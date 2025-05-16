@@ -45,6 +45,7 @@ find_package(Eigen3 3.1.0 REQUIRED)
 find_package(Pangolin CONFIG REQUIRED)
 find_package(realsense2)
 find_package(Boost REQUIRED COMPONENTS serialization)
+find_package(Sophus REQUIRED)
 
 
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -59,7 +60,7 @@ ${ORB_SLAM3_HEADERS}
 
 add_subdirectory(Thirdparty/g2o)
 add_subdirectory(Thirdparty/DBoW2)
-add_subdirectory(Thirdparty/Sophus)
+# add_subdirectory()
 
 target_link_libraries(${PROJECT_NAME}
 ${OpenCV_LIBS}
@@ -68,6 +69,7 @@ ${Pangolin_LIBRARIES}
 DBoW2
 g2o
 ${Boost_LIBRARIES}
+Sophus::Sophus
 )
 
 target_compile_options(${PROJECT_NAME} PRIVATE -Wno-maybe-uninitialized -Wno-unused-variable -Wno-unused-but-set-variable
@@ -94,9 +96,9 @@ PUBLIC
   $<INSTALL_INTERFACE:include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}/CameraModels>
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}/Thirdparty/Sophus>
+  # $<INSTALL_INTERFACE:include/${PROJECT_NAME}/>
 PRIVATE
-  ${CMAKE_CURRENT_SOURCE_DIR}/Thirdparty/Sophus
+  # ${CMAKE_CURRENT_SOURCE_DIR}/
   ${EIGEN3_INCLUDE_DIR}
   ${Pangolin_INCLUDE_DIRS}
 )
@@ -145,7 +147,7 @@ install(
 )
 
 install(
-  DIRECTORY  Thirdparty/DBoW2 Thirdparty/g2o Thirdparty/Sophus
+  DIRECTORY  Thirdparty/DBoW2 Thirdparty/g2o 
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/Thirdparty
   COMPONENT dev
   FILES_MATCHING PATTERN "*.h" PATTERN "*.hpp"

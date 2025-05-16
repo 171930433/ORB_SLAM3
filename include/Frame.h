@@ -25,7 +25,7 @@
 #include "Thirdparty/DBoW2/DBoW2/BowVector.h"
 #include "Thirdparty/DBoW2/DBoW2/FeatureVector.h"
 
-#include "Thirdparty/Sophus/sophus/geometry.hpp"
+#include "sophus/geometry.hpp"
 
 #include "ImuTypes.h"
 #include "ORBVocabulary.h"
@@ -165,7 +165,7 @@ public:
 
 
 private:
-    //Sophus/Eigen migration
+    // sophus/Eigen migration
     Sophus::SE3<float> mTcw;
     Eigen::Matrix<float,3,3> mRwc;
     Eigen::Matrix<float,3,1> mOw;
