@@ -1,6 +1,11 @@
 ##List of Known Dependencies
 ###ORB-SLAM3 v1.0
 
+
+
+sudo apt-get install ros-humble-sophus ros-humble-pangolin
+
+
 In this document we list all the pieces of code included  by ORB-SLAM3 and linked libraries which are not property of the authors of ORB-SLAM3.
 
 
